@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -34,12 +35,21 @@ public class test3 extends LinearOpMode {
         // myMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         myMotor.setTargetPosition(0);
         myMotor1.setTargetPosition(0);
+
+        //pidf
+        PIDFCoefficients pidf = myMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        double newP = pidf.p * 1;
+        double newF = 5.0;
+        PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, newF);
+        myMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
+        myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);   
         
         // up?
         myMotor.setTargetPosition(UP_POSITION);
         myMotor1.setTargetPosition(UP_POSITION);    
         myMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         myMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
