@@ -21,7 +21,7 @@ public class test3 extends LinearOpMode {
 
         // 0 to 2940
         double LIFT_VEL = 450;
-        double LOWER_VEL = 200;
+        double LOWER_VEL = 220;
         
         
         // motor init stuff
@@ -39,7 +39,7 @@ public class test3 extends LinearOpMode {
         //pidf
         PIDFCoefficients pidf = myMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         double newP = pidf.p * 1;
-        double newF = 5.0;
+        double newF = 20;
         PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, newF);
         myMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);   
