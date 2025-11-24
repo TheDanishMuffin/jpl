@@ -39,7 +39,7 @@ public class test3 extends LinearOpMode {
         //pidf
         PIDFCoefficients pidf = myMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         double newP = pidf.p * 1;
-        double newF = 20;
+        double newF = 10;
         PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, newF);
         myMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);   
