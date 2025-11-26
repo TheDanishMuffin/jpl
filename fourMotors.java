@@ -55,12 +55,15 @@ public class fourMotors extends LinearOpMode {
         myMotor3.setTargetPosition(0);
 
         //pidf
-        PIDFCoefficients pidf = myMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        PIDFCoefficients pidf = myMotor0.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        
         double newP = pidf.p * 1;
         double newF = 10;
         PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, newF);
         myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
-        myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);   
+        myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
+        myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
+        myMotor3.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         
         // up?
         myMotor0.setTargetPosition(UP_POSITION);
