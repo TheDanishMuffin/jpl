@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "JPL_Autonomous_FOUR_MOTORS", group = "JPL")
 public class fourMotors extends LinearOpMode {
+    
+    // when looking at the bot from the back (away from canal dir), motors are 0-3 from left to right
     private DcMotorEx myMotor0 = null;
     private DcMotorEx myMotor1 = null;
     private DcMotorEx myMotor2 = null;
@@ -26,17 +28,31 @@ public class fourMotors extends LinearOpMode {
         double LOWER_VEL = 220;
         
         
-        // motor init stuff
-        myMotor = hardwareMap.get(DcMotorEx.class, "motor0");
+        // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
+        myMotor0 = hardwareMap.get(DcMotorEx.class, "motor0");
         myMotor1 = hardwareMap.get(DcMotorEx.class, "motor1");
-        myMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        myMotor2 = hardwareMap.get(DcMotorEx.class, "motor2");
+        myMotor3 = hardwareMap.get(DcMotorEx.class, "motor3");
+        
+        
+        // fix these directions
+        myMotor0.setDirection(DcMotorSimple.Direction.FORWARD);
         myMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
-        myMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        myMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        myMotor3.setDirection(DcMotorSimple.Direction.REVERSE);
+        
+        myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        
         // myMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // myMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        myMotor.setTargetPosition(0);
+        
+        myMotor0.setTargetPosition(0);
         myMotor1.setTargetPosition(0);
+        myMotor2.setTargetPosition(0);
+        myMotor3.setTargetPosition(0);
 
         //pidf
         PIDFCoefficients pidf = myMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
