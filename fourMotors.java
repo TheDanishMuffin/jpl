@@ -59,13 +59,13 @@ public class fourMotors extends LinearOpMode {
         double newP = pidf.p * 1;
         double newF = 10;
         PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, newF);
-        myMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
+        myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);   
         
         // up?
-        myMotor.setTargetPosition(UP_POSITION);
+        myMotor0.setTargetPosition(UP_POSITION);
         myMotor1.setTargetPosition(UP_POSITION);    
-        myMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        myMotor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         myMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         
         telemetry.addData("Status", "Initialized");
@@ -74,12 +74,12 @@ public class fourMotors extends LinearOpMode {
 
 
         // setVel should have PID for speed built in 
-        myMotor.setVelocity(LIFT_VEL);
+        myMotor0.setVelocity(LIFT_VEL);
         myMotor1.setVelocity(LIFT_VEL);
 
         // Wait for BOTH motors to reach target
-        while (opModeIsActive() && (myMotor.isBusy() || myMotor1.isBusy())) {
-            telemetry.addData("M0 Pos", myMotor.getCurrentPosition());
+        while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy())) {
+            telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
             telemetry.addData("M1 Pos", myMotor1.getCurrentPosition());
             telemetry.update();
             }
@@ -88,14 +88,14 @@ public class fourMotors extends LinearOpMode {
         // myMotor1.setPower(0);
         sleep(800); // og 1000
         
-        myMotor.setTargetPosition(DOWN_POSITION);
+        myMotor0.setTargetPosition(DOWN_POSITION);
         myMotor1.setTargetPosition(DOWN_POSITION);  
         
-        myMotor.setVelocity(LOWER_VEL);
+        myMotor0.setVelocity(LOWER_VEL);
         myMotor1.setVelocity(LOWER_VEL);
         
-        while (opModeIsActive() && (myMotor.isBusy() || myMotor1.isBusy())) {
-        telemetry.addData("M0 Pos", myMotor.getCurrentPosition());
+        while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy())) {
+        telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
         telemetry.addData("M1 Pos", myMotor1.getCurrentPosition());
         telemetry.update();
         }
