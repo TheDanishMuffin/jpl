@@ -21,7 +21,7 @@ public class fourMotors extends LinearOpMode {
 
         int UP_POSITION = -710; // og -750
         int DOWN_POSITION = 0;
-
+        double ratio_offset = 1.5
 
         // 0 to 2940
         double LIFT_VEL = 450; //og 450
@@ -67,8 +67,8 @@ public class fourMotors extends LinearOpMode {
         
         // up?
         myMotor0.setTargetPosition(UP_POSITION);
-        myMotor1.setTargetPosition(UP_POSITION);
-        myMotor2.setTargetPosition(UP_POSITION);
+        myMotor1.setTargetPosition((int)(UP_POSITION * ratio_offset));
+        myMotor2.setTargetPosition((int)(UP_POSITION * ratio_offset));
         myMotor3.setTargetPosition(UP_POSITION);
         
         myMotor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -83,8 +83,8 @@ public class fourMotors extends LinearOpMode {
 
         // setVel should have PID for speed built in 
         myMotor0.setVelocity(LIFT_VEL);
-        myMotor1.setVelocity(LIFT_VEL);
-        myMotor2.setVelocity(LIFT_VEL);
+        myMotor1.setVelocity((int) (LIFT_VEL * ratio_offset));
+        myMotor2.setVelocity((int) (LIFT_VEL * ratio_offset));
         myMotor3.setVelocity(LIFT_VEL);
 
         // Wait for BOTH motors to reach target
