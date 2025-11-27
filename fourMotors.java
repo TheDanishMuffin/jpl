@@ -24,7 +24,7 @@ public class fourMotors extends LinearOpMode {
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 450; //og 450
+        double LIFT_VEL = 400; // 2000 for water
         double LOWER_VEL = 220;
         
         
@@ -36,10 +36,10 @@ public class fourMotors extends LinearOpMode {
         
         
         // DISCONNECT THE BUCKET THEN TEST INDIVIDUAL ARMS TO FIND CORRECT DIRECTIONS
-        myMotor0.setDirection(DcMotorSimple.Direction.FORWARD);
-        myMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
-        myMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
-        myMotor3.setDirection(DcMotorSimple.Direction.REVERSE);
+        myMotor0.setDirection(DcMotorSimple.Direction.REVERSE);
+        myMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        myMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        myMotor3.setDirection(DcMotorSimple.Direction.FORWARD);
         
         myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -91,8 +91,8 @@ public class fourMotors extends LinearOpMode {
         while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy())) {
             telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
             telemetry.addData("M1 Pos", myMotor1.getCurrentPosition());
-            telemetry.addData("M2 Pos", myMotor1.getCurrentPosition());
-            telemetry.addData("M3 Pos", myMotor1.getCurrentPosition());
+            telemetry.addData("M2 Pos", myMotor2.getCurrentPosition());
+            telemetry.addData("M3 Pos", myMotor3.getCurrentPosition());
             telemetry.update();
             }
         
