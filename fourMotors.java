@@ -21,7 +21,7 @@ public class fourMotors extends LinearOpMode {
 
         int UP_POSITION = -710; // og -750
         int DOWN_POSITION = 0;
-        double ratio_offset = 1.5
+        double ratio_offset = 1.5;
 
         // 0 to 2940
         double LIFT_VEL = 450; //og 450
@@ -106,15 +106,15 @@ public class fourMotors extends LinearOpMode {
         myMotor3.setTargetPosition(DOWN_POSITION);
         
         myMotor0.setVelocity(LOWER_VEL);
-        myMotor1.setVelocity(LOWER_VEL);
-        myMotor2.setVelocity(LOWER_VEL);
+        myMotor1.setVelocity((int) (LOWER_VEL * ratio_offset));
+        myMotor2.setVelocity((int) (LOWER_VEL * ratio_offset));
         myMotor3.setVelocity(LOWER_VEL);
         
         while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy())) {
         telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
         telemetry.addData("M1 Pos", myMotor1.getCurrentPosition());
-        telemetry.addData("M2 Pos", myMotor1.getCurrentPosition());
-        telemetry.addData("M3 Pos", myMotor1.getCurrentPosition());
+        telemetry.addData("M2 Pos", myMotor2.getCurrentPosition());
+        telemetry.addData("M3 Pos", myMotor3.getCurrentPosition());
         telemetry.update();
         }
 
