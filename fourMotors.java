@@ -19,12 +19,12 @@ public class fourMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -710; // og -750
+        int UP_POSITION = -450; // og -750
         int DOWN_POSITION = 0;
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 400; // 2000 for water
+        double LIFT_VEL = 250; // 2000 for water
         double LOWER_VEL = 220;
         
         
