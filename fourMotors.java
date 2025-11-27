@@ -35,7 +35,7 @@ public class fourMotors extends LinearOpMode {
         myMotor3 = hardwareMap.get(DcMotorEx.class, "motor3");
         
         
-        // fix these directions
+        // DISCONNECT THE BUCKET THEN TEST INDIVIDUAL ARMS TO FIND CORRECT DIRECTIONS
         myMotor0.setDirection(DcMotorSimple.Direction.FORWARD);
         myMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
         myMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
