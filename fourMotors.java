@@ -19,12 +19,12 @@ public class fourMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -450; // og -750
+        int UP_POSITION = -460; // og -750
         int DOWN_POSITION = 0;
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 300; // do not set this higher than 1600 or else the motors will stall / twist
+        double LIFT_VEL = 350; // do not set this higher than 1600 or else the motors will stall / twist
         double LOWER_VEL = 150;
         
         
@@ -97,8 +97,11 @@ public class fourMotors extends LinearOpMode {
             telemetry.update();
             }
         
-        // myMotor.setPower(0);
-        // myMotor1.setPower(0);
+        myMotor0.setVelocity(0);
+        myMotor1.setVelocity(0);
+        myMotor2.setVelocity(0);
+        myMotor3.setVelocity(0);
+        
         sleep(800); // og 1000
 
         // insert new PIDF here to smoothly go back down
