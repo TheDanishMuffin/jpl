@@ -19,7 +19,7 @@ public class fourMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -420; // og -750
+        int UP_POSITION = -430; // og -750
         int DOWN_POSITION = 0;
         double ratio_offset = 1.5;
 
@@ -54,10 +54,11 @@ public class fourMotors extends LinearOpMode {
         myMotor3.setTargetPosition(0);
 
         //pidf
-        PIDFCoefficients pidf = myMotor0.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        PIDFCoefficients pidf40 = myMotor0.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        PIDFCoefficients pidf60 = myMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         
-        double newP = pidf.p * 1;
-        // double newF = 10;
+        // assign motor0 and motor3 appropriate 40 pid and then motor1 and motor2 t 60 pid
+        
         PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, pidf.f);
         myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
