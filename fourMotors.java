@@ -55,14 +55,13 @@ public class fourMotors extends LinearOpMode {
 
         //pidf
         PIDFCoefficients pidf40 = myMotor0.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        PIDFCoefficients pidf60 = myMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         
-        // assign motor0 and motor3 appropriate 40 pid and then motor1 and motor2 t 60 pid
+        // assign motor0 and motor3 appropriate 40 pid and then leave default pid for 60s
         
-        PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, pidf.f);
+        PIDFCoefficients newPIDF = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 15);
         myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
-        myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
-        myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
+        // myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
+        // myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         myMotor3.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         
         // up?
