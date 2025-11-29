@@ -24,7 +24,7 @@ public class fourMotors extends LinearOpMode {
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 300; // 2000 for water
+        double LIFT_VEL = 300; // do not set this higher than 1600 or else the motors will stall / twist
         double LOWER_VEL = 150;
         
         
