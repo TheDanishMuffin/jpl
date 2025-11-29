@@ -59,7 +59,7 @@ public class fourMotors extends LinearOpMode {
         
         // assign motor0 and motor3 appropriate 40 pid and then leave default pid for 60s
         
-        PIDFCoefficients newPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 15);
+        PIDFCoefficients newPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 25);
         PIDFCoefficients newPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 15);
         myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF40);
         myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF60);
@@ -102,8 +102,8 @@ public class fourMotors extends LinearOpMode {
         sleep(800); // og 1000
 
         // insert new PIDF here to smoothly go back down
-        PIDFCoefficients downPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 15);
-        PIDFCoefficients downPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 15);
+        PIDFCoefficients downPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f);
+        PIDFCoefficients downPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f);
         myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF40);
         myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF60);
         myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF60);
