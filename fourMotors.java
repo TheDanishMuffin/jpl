@@ -19,13 +19,13 @@ public class fourMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -450; // og -750
+        int UP_POSITION = -420; // og -750
         int DOWN_POSITION = 0;
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 250; // 2000 for water
-        double LOWER_VEL = 220;
+        double LIFT_VEL = 300; // 2000 for water
+        double LOWER_VEL = 150;
         
         
         // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
@@ -35,10 +35,9 @@ public class fourMotors extends LinearOpMode {
         myMotor3 = hardwareMap.get(DcMotorEx.class, "motor3");
         
         
-        // DISCONNECT THE BUCKET THEN TEST INDIVIDUAL ARMS TO FIND CORRECT DIRECTIONS
         myMotor0.setDirection(DcMotorSimple.Direction.REVERSE);
-        myMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
-        myMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        myMotor1.setDirection(DcMotorSimple.Direction.REVERSE); // used to be forward
+        myMotor2.setDirection(DcMotorSimple.Direction.FORWARD); // used to be reverse
         myMotor3.setDirection(DcMotorSimple.Direction.FORWARD);
         
         myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -58,8 +57,8 @@ public class fourMotors extends LinearOpMode {
         PIDFCoefficients pidf = myMotor0.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         
         double newP = pidf.p * 1;
-        double newF = 10;
-        PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, newF);
+        // double newF = 10;
+        PIDFCoefficients newPIDF = new PIDFCoefficients(newP, pidf.i, pidf.d, pidf.f);
         myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
         myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF);
