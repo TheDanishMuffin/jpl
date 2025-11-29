@@ -19,7 +19,7 @@ public class fourMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -430; // og -750
+        int UP_POSITION = -450; // og -750
         int DOWN_POSITION = 0;
         double ratio_offset = 1.5;
 
@@ -101,7 +101,13 @@ public class fourMotors extends LinearOpMode {
         // myMotor1.setPower(0);
         sleep(800); // og 1000
 
-        // insert new PIDF here to smoothly go back down        
+        // insert new PIDF here to smoothly go back down
+        PIDFCoefficients downPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 15);
+        PIDFCoefficients downPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 15);
+        myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF40);
+        myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF60);
+        myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF60);
+        myMotor3.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF40);
         
         myMotor0.setTargetPosition(DOWN_POSITION);
         myMotor1.setTargetPosition(DOWN_POSITION);
