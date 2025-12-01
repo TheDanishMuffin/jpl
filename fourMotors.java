@@ -151,13 +151,38 @@ public class fourMotors extends LinearOpMode {
                 telemetry.update();
             }
 
-            // add part here that pushes the bucket firmly through the water to the B-stop.
-            // consider doing another downward movement with high feedforward 
+            // pushes the bucket firmly through the water to the B-stop.
+            // consider doing another downward movement with high feedforward or this below:
+            myMotor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            // tune these with loose collars
+            myMotor0.setPower(0.2);
+            myMotor1.setPower(0.2);
+            myMotor2.setPower(0.2);
+            myMotor3.setPower(0.2);
+
+            telemetry.addData("Status", "pushing into bstop");
+            telemetry.update();
             
-            // Small sleep at bottom before starting next loop
+            // push for 0.5 sec
             sleep(500); 
 
-            
+            // bucket should be heavy and full of water
+            myMotor0.setVelocity(0);
+            myMotor1.setVelocity(0);
+            myMotor2.setVelocity(0);
+            myMotor3.setVelocity(0);
+
+            // reset encoders, so the motor takes a new 0 position
+            myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            sleep(200);
         }
 
         telemetry.addData("Status", "Done!");
