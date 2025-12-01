@@ -22,12 +22,12 @@ public class fourMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -445; // og -750
-        int DOWN_POSITION = 0;
+        int UP_POSITION = -545; // og -750
+        int DOWN_POSITION = 100;
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 900; // og 600, max 1600 or else the motors will stall / twist. 300 for testing w/o weights
+        double LIFT_VEL = 600; // og 600, max 1600 or else the motors will stall / twist. 300 for testing w/o weights
         double LOWER_VEL = 150;
         
         // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
@@ -143,7 +143,7 @@ public class fourMotors extends LinearOpMode {
             myMotor2.setPower(0);
             myMotor3.setPower(0);
             
-            sleep(800); 
+            sleep(1500); 
 
             // ------------------------------------
             // PHASE 2: GO DOWN
@@ -173,7 +173,7 @@ public class fourMotors extends LinearOpMode {
             
             runtime.reset();
             // Wait for completion
-            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy()) && runtime.seconds() < 4.0) {
+            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy()) && runtime.seconds() < 3.0) {
                 telemetry.addData("Loop", i + 1);
                 telemetry.addData("Status", "Moving DOWN");
                 telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
@@ -191,33 +191,30 @@ public class fourMotors extends LinearOpMode {
             myMotor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             // tune these with loose collars
-            myMotor0.setPower(0.2);
-            myMotor1.setPower(0.2);
-            myMotor2.setPower(0.2);
-            myMotor3.setPower(0.2);
+            myMotor0.setPower(0.4);
+            myMotor1.setPower(0.4);
+            myMotor2.setPower(0.4);
+            myMotor3.setPower(0.4);
             
-            sleep(1000);
+            telemetry.addData("Status", "pushing into bstop");
+            telemetry.update();
+            
+            // push for 2 sec
+            sleep(2500);
             
             myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            telemetry.addData("Status", "pushing into bstop");
-            telemetry.update();
             
-            // push for 0.5 sec
-            sleep(500); 
+            UP_POSITION -= 15;
+    
 
             // bucket should be heavy and full of water
             // myMotor0.setVelocity(0);
             // myMotor1.setVelocity(0);
             // myMotor2.setVelocity(0);
             // myMotor3.setVelocity(0);
-
-            // reset encoders, so the motor takes a new 0 position
-
-            sleep(400);
         }
 
         telemetry.addData("Status", "Done!");
