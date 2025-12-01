@@ -27,7 +27,7 @@ public class fourMotors extends LinearOpMode {
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 600; // max 1600 or else the motors will stall / twist. 300 for testing w/o weights
+        double LIFT_VEL = 900; // og 600, max 1600 or else the motors will stall / twist. 300 for testing w/o weights
         double LOWER_VEL = 150;
         
         // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
@@ -171,8 +171,9 @@ public class fourMotors extends LinearOpMode {
             myMotor2.setVelocity((int) (LOWER_VEL * ratio_offset));
             myMotor3.setVelocity(LOWER_VEL);
             
+            runtime.reset();
             // Wait for completion
-            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy())) {
+            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy()) && runtime.seconds() < 4.0) {
                 telemetry.addData("Loop", i + 1);
                 telemetry.addData("Status", "Moving DOWN");
                 telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
@@ -195,7 +196,7 @@ public class fourMotors extends LinearOpMode {
             myMotor2.setPower(0.2);
             myMotor3.setPower(0.2);
             
-            sleep(200);
+            sleep(1000);
             
             myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
