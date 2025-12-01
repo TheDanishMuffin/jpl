@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -15,11 +16,13 @@ public class fourMotors extends LinearOpMode {
     private DcMotorEx myMotor1 = null;
     private DcMotorEx myMotor2 = null;
     private DcMotorEx myMotor3 = null;
+    
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -430; // og -750
+        int UP_POSITION = -445; // og -750
         int DOWN_POSITION = 0;
         double ratio_offset = 1.5;
 
@@ -38,7 +41,7 @@ public class fourMotors extends LinearOpMode {
         myMotor2.setDirection(DcMotorSimple.Direction.FORWARD); 
         myMotor3.setDirection(DcMotorSimple.Direction.FORWARD);
         
-        int tolerance = 30;
+        int tolerance = 15;
         myMotor0.setTargetPositionTolerance(tolerance);
         myMotor1.setTargetPositionTolerance(tolerance);
         myMotor2.setTargetPositionTolerance(tolerance);
@@ -86,6 +89,14 @@ public class fourMotors extends LinearOpMode {
             // ------------------------------------
             // PHASE 1: GO UP
             // ------------------------------------
+            // myMotor0.setTargetPosition(0);
+            // myMotor1.setTargetPosition(0);
+            // myMotor2.setTargetPosition(0);
+            // myMotor3.setTargetPosition(0);
+            myMotor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             
             // Set Stronger PIDF for lifting
             myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, liftPIDF40);
@@ -104,9 +115,11 @@ public class fourMotors extends LinearOpMode {
             myMotor1.setVelocity((int) (LIFT_VEL * ratio_offset));
             myMotor2.setVelocity((int) (LIFT_VEL * ratio_offset));
             myMotor3.setVelocity(LIFT_VEL);
-
+            
+            
+            runtime.reset();
             // Wait for completion
-            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy())) {
+            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy()) && runtime.seconds() < 10.0) {
                 telemetry.addData("Loop", i + 1);
                 telemetry.addData("Status", "Moving UP");
                 telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
@@ -121,12 +134,24 @@ public class fourMotors extends LinearOpMode {
             // myMotor1.setVelocity(0);
             // myMotor2.setVelocity(0);
             // myMotor3.setVelocity(0);
+            myMotor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor0.setPower(0);
+            myMotor1.setPower(0);
+            myMotor2.setPower(0);
+            myMotor3.setPower(0);
             
             sleep(800); 
 
             // ------------------------------------
             // PHASE 2: GO DOWN
             // ------------------------------------
+            myMotor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Set Standard PIDF for lowering
             myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF40);
@@ -169,6 +194,13 @@ public class fourMotors extends LinearOpMode {
             myMotor1.setPower(0.2);
             myMotor2.setPower(0.2);
             myMotor3.setPower(0.2);
+            
+            sleep(200);
+            
+            myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             telemetry.addData("Status", "pushing into bstop");
             telemetry.update();
@@ -177,18 +209,14 @@ public class fourMotors extends LinearOpMode {
             sleep(500); 
 
             // bucket should be heavy and full of water
-            myMotor0.setVelocity(0);
-            myMotor1.setVelocity(0);
-            myMotor2.setVelocity(0);
-            myMotor3.setVelocity(0);
+            // myMotor0.setVelocity(0);
+            // myMotor1.setVelocity(0);
+            // myMotor2.setVelocity(0);
+            // myMotor3.setVelocity(0);
 
             // reset encoders, so the motor takes a new 0 position
-            myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            sleep(200);
+            sleep(400);
         }
 
         telemetry.addData("Status", "Done!");
