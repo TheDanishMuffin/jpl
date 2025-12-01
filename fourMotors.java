@@ -19,12 +19,12 @@ public class fourMotors extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -475; // og -750
-        int DOWN_POSITION = 15;
+        int UP_POSITION = -430; // og -750
+        int DOWN_POSITION = 0;
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 300; // max 1600 or else the motors will stall / twist. 300 for testing w/o weights
+        double LIFT_VEL = 600; // max 1600 or else the motors will stall / twist. 300 for testing w/o weights
         double LOWER_VEL = 150;
         
         // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
@@ -37,6 +37,12 @@ public class fourMotors extends LinearOpMode {
         myMotor1.setDirection(DcMotorSimple.Direction.REVERSE); 
         myMotor2.setDirection(DcMotorSimple.Direction.FORWARD); 
         myMotor3.setDirection(DcMotorSimple.Direction.FORWARD);
+        
+        int tolerance = 30;
+        myMotor0.setTargetPositionTolerance(tolerance);
+        myMotor1.setTargetPositionTolerance(tolerance);
+        myMotor2.setTargetPositionTolerance(tolerance);
+        myMotor3.setTargetPositionTolerance(tolerance);
         
         myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -111,10 +117,10 @@ public class fourMotors extends LinearOpMode {
             }
             
             // Stop briefly at the top
-            myMotor0.setVelocity(0);
-            myMotor1.setVelocity(0);
-            myMotor2.setVelocity(0);
-            myMotor3.setVelocity(0);
+            // myMotor0.setVelocity(0);
+            // myMotor1.setVelocity(0);
+            // myMotor2.setVelocity(0);
+            // myMotor3.setVelocity(0);
             
             sleep(800); 
 
@@ -151,8 +157,8 @@ public class fourMotors extends LinearOpMode {
                 telemetry.update();
             }
 
-            // pushes the bucket firmly through the water to the B-stop.
-            // consider doing another downward movement with high feedforward or this below:
+            // // pushes the bucket firmly through the water to the B-stop.
+            // // consider doing another downward movement with high feedforward or this below:
             myMotor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             myMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             myMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
