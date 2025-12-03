@@ -28,7 +28,7 @@ public class fourMotors extends LinearOpMode {
 
         // 0 to 2940
         double LIFT_VEL = 600; // og 600, max 1600 or else the motors will stall / twist. 300 for testing w/o weights
-        double LOWER_VEL = 300;
+        double LOWER_VEL = 350;
         
         // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
         myMotor0 = hardwareMap.get(DcMotorEx.class, "motor0");
@@ -81,7 +81,7 @@ public class fourMotors extends LinearOpMode {
         waitForStart();
 
         // --- LOOP STARTS HERE ---
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 6; i++) {
             
             telemetry.addData("Loop Count", i + 1);
             telemetry.update();
@@ -209,8 +209,8 @@ public class fourMotors extends LinearOpMode {
             telemetry.addData("Status", "pushing into bstop");
             telemetry.update();
             
-            // push for 2 sec
-            sleep(2000);
+            // push for 1.5 sec
+            sleep(1500);
             
             myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
