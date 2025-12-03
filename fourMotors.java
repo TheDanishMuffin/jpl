@@ -218,6 +218,8 @@ public class fourMotors extends LinearOpMode {
             myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             
             UP_POSITION -= 15;
+            // UP_POSITION = Math.max(UP_POSITION - 15, -620);
+            // this new line would prevent the arm from thinking it has not reached its target in later pickups where error has accumulated.
     
         }
 
