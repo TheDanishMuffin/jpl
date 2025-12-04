@@ -24,10 +24,12 @@ public class fourMotors extends LinearOpMode {
 
         int UP_POSITION = -545; // og -545
         int DOWN_POSITION = 100;
+        int down_hold = 1800;
+        
         double ratio_offset = 1.5;
 
         // 0 to 2940
-        double LIFT_VEL = 600; // og 600, max 1600 or else the motors will stall / twist. 300 for testing w/o weights
+        double LIFT_VEL = 900; // og 600, max 1600 or else the motors will stall / twist. 300 for testing w/o weights
         double LOWER_VEL = 350;
         
         // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
@@ -68,8 +70,8 @@ public class fourMotors extends LinearOpMode {
         
         // Create the modified coefficient objects
         // Stronger PIDF for going UP
-        PIDFCoefficients liftPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 25);
-        PIDFCoefficients liftPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 15);
+        PIDFCoefficients liftPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 35);
+        PIDFCoefficients liftPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 25);
 
         // Standard PIDF for going DOWN
         PIDFCoefficients downPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f);
@@ -81,7 +83,7 @@ public class fourMotors extends LinearOpMode {
         waitForStart();
 
         // --- LOOP STARTS HERE ---
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < 7; i++) {
             
             telemetry.addData("Loop Count", i + 1);
             telemetry.update();
@@ -201,25 +203,25 @@ public class fourMotors extends LinearOpMode {
             myMotor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             // tune these with loose collars
-            myMotor0.setPower(0.4);
-            myMotor1.setPower(0.4);
-            myMotor2.setPower(0.4);
-            myMotor3.setPower(0.4);
+            myMotor0.setPower(0.3);
+            myMotor1.setPower(0.3);
+            myMotor2.setPower(0.3);
+            myMotor3.setPower(0.3);
             
             telemetry.addData("Status", "pushing into bstop");
             telemetry.update();
             
-            // push for 1.5 sec
-            sleep(1500);
+            // push for variable time
+            sleep(down_hold);
             
             myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             
+            // decrements/increments
             UP_POSITION -= 15;
-            // UP_POSITION = Math.max(UP_POSITION - 15, -620);
-            // this new line would prevent the arm from thinking it has not reached its target in later pickups where error has accumulated.
+            down_hold += 1000;
     
         }
 
