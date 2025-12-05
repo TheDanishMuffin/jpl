@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @Autonomous(name = "JPL_Autonomous_FOUR_MOTORS", group = "JPL")
 public class fourMotors extends LinearOpMode {
     
-    // when looking at the bot from the back (away from canal dir), motors are 0, 2, 1, 3
+    // when looking at the bot from the back (away from canal dir), motors are 0, 1, 2, 3
     private DcMotorEx myMotor0 = null;
     private DcMotorEx myMotor1 = null;
     private DcMotorEx myMotor2 = null;
@@ -39,8 +39,8 @@ public class fourMotors extends LinearOpMode {
         myMotor3 = hardwareMap.get(DcMotorEx.class, "motor3");
         
         myMotor0.setDirection(DcMotorSimple.Direction.REVERSE);
-        myMotor1.setDirection(DcMotorSimple.Direction.REVERSE); 
-        myMotor2.setDirection(DcMotorSimple.Direction.FORWARD); 
+        myMotor1.setDirection(DcMotorSimple.Direction.FORWARD); 
+        myMotor2.setDirection(DcMotorSimple.Direction.REVERSE); 
         myMotor3.setDirection(DcMotorSimple.Direction.FORWARD);
         
         int tolerance = 15;
