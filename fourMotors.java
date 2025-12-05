@@ -1,136 +1,231 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "MOTOR_ALIGN", group = "JPL")
-public class shaftAlign extends LinearOpMode {
-
-    // --- CONFIGURATION ---
-    // Change this value to 0, 1, 2, or 3 to test that specific motor
-    final int TEST_MOTOR_INDEX = 2; 
-    // ---------------------
-
+@Autonomous(name = "JPL_Autonomous_FOUR_MOTORS", group = "JPL")
+public class fourMotors extends LinearOpMode {
+    
+    // when looking at the bot from the back (away from canal dir), motors are 0, 2, 1, 3
     private DcMotorEx myMotor0 = null;
     private DcMotorEx myMotor1 = null;
     private DcMotorEx myMotor2 = null;
     private DcMotorEx myMotor3 = null;
+    
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
 
-        int UP_POSITION = -1000; 
-        int DOWN_POSITION = 0;
+        int UP_POSITION = -545; // og -545
+        int DOWN_POSITION = 50; //50
+        int down_hold = 1800;
+        
         double ratio_offset = 1.5;
 
-        double LIFT_VEL = 200; 
-        double LOWER_VEL = 150;
+        // 0 to 2940
+        double LIFT_VEL = 900; // og 600, max 1600 or else the motors will stall / twist. 300 for testing w/o weights
+        double LOWER_VEL = 350;
         
-        // Initialize ALL motors (prevents configuration errors)
+        // motor init stuff. the 0 and 3 motors are 40:1, 1 and 2 are 60:1
         myMotor0 = hardwareMap.get(DcMotorEx.class, "motor0");
         myMotor1 = hardwareMap.get(DcMotorEx.class, "motor1");
         myMotor2 = hardwareMap.get(DcMotorEx.class, "motor2");
         myMotor3 = hardwareMap.get(DcMotorEx.class, "motor3");
         
         myMotor0.setDirection(DcMotorSimple.Direction.REVERSE);
-        myMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
-        myMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
+        myMotor1.setDirection(DcMotorSimple.Direction.REVERSE); 
+        myMotor2.setDirection(DcMotorSimple.Direction.FORWARD); 
         myMotor3.setDirection(DcMotorSimple.Direction.FORWARD);
         
-        // Reset all encoders
+        int tolerance = 15;
+        myMotor0.setTargetPositionTolerance(tolerance);
+        myMotor1.setTargetPositionTolerance(tolerance);
+        myMotor2.setTargetPositionTolerance(tolerance);
+        myMotor3.setTargetPositionTolerance(tolerance);
+        
         myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         
-        // Set zero power behavior (Keep them stiff so we can see if the active one drags)
-        myMotor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        myMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        myMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        myMotor3.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        myMotor0.setTargetPosition(0);
+        myMotor1.setTargetPosition(0);
+        myMotor2.setTargetPosition(0);
+        myMotor3.setTargetPosition(0);
 
-        // PIDF Setup
+        myMotor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        myMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        myMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        myMotor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Get initial PIDF coefficients to modify later
         PIDFCoefficients pidf40 = myMotor0.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         PIDFCoefficients pidf60 = myMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         
-        PIDFCoefficients newPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 15);
-        PIDFCoefficients newPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 15);
-        
-        myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF40);
-        myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF60);
-        myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF60);
-        myMotor3.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, newPIDF40);
+        // Create the modified coefficient objects
+        // Stronger PIDF for going UP
+        PIDFCoefficients liftPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 35);
+        PIDFCoefficients liftPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 25);
 
-        // Select the active motor for the user
-        DcMotorEx activeMotor = null;
-        double targetVel = 0;
-        int targetPos = 0;
+        // Standard PIDF for going DOWN
+        PIDFCoefficients downPIDF40 = new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f);
+        PIDFCoefficients downPIDF60 = new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f);
         
-        switch (TEST_MOTOR_INDEX) {
-            case 0: activeMotor = myMotor0; break;
-            case 1: activeMotor = myMotor1; break;
-            case 2: activeMotor = myMotor2; break;
-            case 3: activeMotor = myMotor3; break;
-        }
-
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Testing Motor", TEST_MOTOR_INDEX);
         telemetry.update();
+        
         waitForStart();
 
-        // --- MOVE UP ---
-        if (activeMotor != null) {
-            // Calculate specific target based on gear ratio (40:1 vs 60:1)
-            // Motors 1 and 2 are 60:1 and need the offset
-            boolean is60to1 = (TEST_MOTOR_INDEX == 1 || TEST_MOTOR_INDEX == 2);
+        // --- LOOP STARTS HERE ---
+        for(int i = 0; i < 7; i++) {
             
-            targetPos = is60to1 ? (int)(UP_POSITION * ratio_offset) : UP_POSITION;
-            targetVel = is60to1 ? (int)(LIFT_VEL * ratio_offset) : LIFT_VEL;
+            telemetry.addData("Loop Count", i + 1);
+            telemetry.update();
 
-            activeMotor.setTargetPosition(targetPos);
-            activeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            activeMotor.setVelocity(targetVel);
+            // ------------------------------------
+            // PHASE 1: GO UP
+            // ------------------------------------
+            // myMotor0.setTargetPosition(0);
+            // myMotor1.setTargetPosition(0);
+            // myMotor2.setTargetPosition(0);
+            // myMotor3.setTargetPosition(0);
+            myMotor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            
+            // Set Stronger PIDF for lifting
+            myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, liftPIDF40);
+            myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, liftPIDF60);
+            myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, liftPIDF60);
+            myMotor3.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, liftPIDF40);
 
-            // Wait for ONLY the active motor
-            while (opModeIsActive() && activeMotor.isBusy()) {
-                telemetry.addData("Testing Motor", TEST_MOTOR_INDEX);
-                telemetry.addData("Current Pos", activeMotor.getCurrentPosition());
-                telemetry.addData("Target Pos", targetPos);
+            // Set Targets
+            myMotor0.setTargetPosition(UP_POSITION);
+            myMotor1.setTargetPosition((int)(UP_POSITION * ratio_offset));
+            myMotor2.setTargetPosition((int)(UP_POSITION * ratio_offset));
+            myMotor3.setTargetPosition(UP_POSITION);
+            
+            // Set Velocity
+            myMotor0.setVelocity(LIFT_VEL);
+            myMotor1.setVelocity((int) (LIFT_VEL * ratio_offset));
+            myMotor2.setVelocity((int) (LIFT_VEL * ratio_offset));
+            myMotor3.setVelocity(LIFT_VEL);
+            
+            
+            runtime.reset();
+            // Wait for completion
+            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy()) && runtime.seconds() < 6.0) {
+                // if(Math.abs(myMotor0.getCurrentPosition() - UP_POSITION) < 100)
+                // {
+                //     LIFT_VEL = 150;
+                // }
+                // else
+                // {
+                //     LIFT_VEL = 600;
+                // }
+                // myMotor0.setVelocity(LIFT_VEL);
+                // myMotor1.setVelocity((int) (LIFT_VEL * ratio_offset));
+                // myMotor2.setVelocity((int) (LIFT_VEL * ratio_offset));
+                // myMotor3.setVelocity(LIFT_VEL);
+                    
+                telemetry.addData("Loop", i + 1);
+                telemetry.addData("Status", "Moving UP");
+                telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
+                telemetry.addData("M1 Pos", myMotor1.getCurrentPosition());
+                telemetry.addData("M2 Pos", myMotor2.getCurrentPosition());
+                telemetry.addData("M3 Pos", myMotor3.getCurrentPosition());
                 telemetry.update();
             }
-        }
-        
-        sleep(800);
-
-        // --- MOVE DOWN ---
-        if (activeMotor != null) {
-            // Apply Down PIDF
-            PIDFCoefficients downPIDF = (TEST_MOTOR_INDEX == 1 || TEST_MOTOR_INDEX == 2) ? 
-                new PIDFCoefficients(pidf60.p, pidf60.i, pidf60.d, pidf60.f + 15) : 
-                new PIDFCoefficients(pidf40.p, pidf40.i, pidf40.d, pidf40.f + 15);
-                
-            activeMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF);
-
-            // Calculate velocities/pos for down
-            boolean is60to1 = (TEST_MOTOR_INDEX == 1 || TEST_MOTOR_INDEX == 2);
-            targetVel = is60to1 ? (int)(LOWER_VEL * ratio_offset) : LOWER_VEL;
             
-            activeMotor.setTargetPosition(DOWN_POSITION);
-            activeMotor.setVelocity(targetVel);
+            myMotor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             
-            // Wait for ONLY the active motor
-            while (opModeIsActive() && activeMotor.isBusy()) {
-                telemetry.addData("Testing Motor", TEST_MOTOR_INDEX);
-                telemetry.addData("Current Pos", activeMotor.getCurrentPosition());
+            double upHoldPower = -0.04;
+            myMotor0.setPower(upHoldPower);
+            myMotor1.setPower(upHoldPower);
+            myMotor2.setPower(upHoldPower);
+            myMotor3.setPower(upHoldPower);
+            
+            sleep(1200); 
+
+            // ------------------------------------
+            // PHASE 2: GO DOWN
+            // ------------------------------------
+            myMotor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            myMotor3.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // Set Standard PIDF for lowering
+            myMotor0.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF40);
+            myMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF60);
+            myMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF60);
+            myMotor3.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, downPIDF40);
+            
+            // Set Targets
+            myMotor0.setTargetPosition(DOWN_POSITION);
+            myMotor1.setTargetPosition((int)(DOWN_POSITION * ratio_offset));
+            myMotor2.setTargetPosition((int)(DOWN_POSITION * ratio_offset));
+            myMotor3.setTargetPosition(DOWN_POSITION);
+            
+            // Set Velocity
+            myMotor0.setVelocity(LOWER_VEL);
+            myMotor1.setVelocity((int) (LOWER_VEL * ratio_offset));
+            myMotor2.setVelocity((int) (LOWER_VEL * ratio_offset));
+            myMotor3.setVelocity(LOWER_VEL);
+            
+            runtime.reset();
+            // Wait for completion
+            while (opModeIsActive() && (myMotor0.isBusy() || myMotor1.isBusy()) && runtime.seconds() < 1.5) {
+                telemetry.addData("Loop", i + 1);
+                telemetry.addData("Status", "Moving DOWN");
+                telemetry.addData("M0 Pos", myMotor0.getCurrentPosition());
+                telemetry.addData("M1 Pos", myMotor1.getCurrentPosition());
+                telemetry.addData("M2 Pos", myMotor2.getCurrentPosition());
+                telemetry.addData("M3 Pos", myMotor3.getCurrentPosition());
                 telemetry.update();
             }
+
+            // // pushes the bucket firmly through the water to the B-stop.
+            // // consider doing another downward movement with high feedforward or this below:
+            myMotor0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            myMotor3.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            // tune these with loose collars
+            myMotor0.setPower(0.1);
+            myMotor1.setPower(0.1);
+            myMotor2.setPower(0.1);
+            myMotor3.setPower(0.1);
+            
+            telemetry.addData("Status", "pushing into bstop");
+            telemetry.update();
+            
+            // push for variable time
+            sleep(down_hold);
+            
+            myMotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            myMotor3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            
+            // decrements/increments
+            // UP_POSITION -= 5;
+            down_hold += 100;
+    
         }
 
-        telemetry.addData("Status", "Single Motor Test Done!");
+        telemetry.addData("Status", "Done!");
         telemetry.update();
     }
 }
