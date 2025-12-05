@@ -249,7 +249,7 @@ public class fourMotors extends LinearOpMode {
             
             // decrements/increments
             // UP_POSITION -= 5;
-            down_hold += 100;
+            // down_hold += 100;
     
         }
 
